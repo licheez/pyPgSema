@@ -1,8 +1,10 @@
+import asyncio
+import datetime
 import logging
 
 from injector import Injector
 
-from pvway_pgsema.di.pvway_pgsema_di import pvway_pgsema_install
+from pvway_pgsema.di.pvway_pgsema_di import PvWayPgSemaConfigurer
 from pvway_pgsema.services.sema_service import SemaService
 
 
@@ -33,18 +35,23 @@ def main():
 
     injector = Injector()
 
-    pvway_pgsema_install(
-        injector.binder,
+    configurer = PvWayPgSemaConfigurer(
         schema_name='schema',
         table_name='table',
         get_cs_async=__get_cs_async,
         log_exception=__log_exception,
         log_info=__log_info)
+    configurer.install(injector.binder)
 
     print('configuration complete')
-    sema_svc = injector.get(SemaService)
+    svc = injector.get(SemaService)
     print('sema_svc available')
-    sema_svc.print_config()
+    svc.print_config()
+
+    si = asyncio.run(svc.acquire_semaphore_async(
+        'name', 'owner',
+        datetime.timedelta(minutes=5)))
+    print(si)
 
 
 # Press the green button in the gutter to run the script.

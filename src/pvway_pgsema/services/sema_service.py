@@ -1,9 +1,12 @@
 import asyncio
 
+from pvway_sema_abs.semaphore_service import SemaphoreService
+
 from src.pvway_pgsema.services.sema_config import SemaConfig
 from injector import inject
 
-class SemaService:
+
+class SemaService(SemaphoreService):
     @inject
     def __init__(self, config: SemaConfig):
         print('in SemaService.init')
@@ -12,6 +15,9 @@ class SemaService:
         self._get_cs_async = config.get_cs_async
         self._log_exception = config.log_exception
         self._log_info = config.log_info
+
+    def __private_method(self):
+        pass
 
     def print_config(self):
         cs = asyncio.run(self._get_cs_async())
