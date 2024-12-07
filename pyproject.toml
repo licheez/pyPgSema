@@ -7,6 +7,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.13"
+pvway-sema-abs = "^0.1.1"
+injector = "^0.22.0"
 
 [[tool.poetry.packages]]
 from = "src"
