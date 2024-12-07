@@ -1,7 +1,8 @@
+import logging
+
 from injector import Injector
 
-from pvway_pgsema.di.pvway_sema_di import configure_sema_config
-from pvway_pgsema.module.sema_module import SemaModule
+from pvway_pgsema.di.pvway_pgsema_di import pvway_pgsema_install
 from pvway_pgsema.services.sema_service import SemaService
 
 
@@ -10,18 +11,41 @@ def print_hi(name):
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
 
+async def __get_cs_async():
+    return 'cs'
+
+
+def __log_exception(e: Exception) -> None:
+    logging.error(e)
+
+
+def __log_info(info: str) -> None:
+    logging.info(info)
+
+
 def main():
     print('in main')
-    injector = Injector([
-        configure_sema_config(
-            schema_name='schema',
-            table_name= 'table'),
-        SemaModule()
-    ])
+
+    # Configure the logging
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s - %(levelname)s - %(message)s')
+
+    injector = Injector()
+
+    pvway_pgsema_install(
+        injector.binder,
+        schema_name='schema',
+        table_name='table',
+        get_cs_async=__get_cs_async,
+        log_exception=__log_exception,
+        log_info=__log_info)
+
     print('configuration complete')
     sema_svc = injector.get(SemaService)
     print('sema_svc available')
     sema_svc.print_config()
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
