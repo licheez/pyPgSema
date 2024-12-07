@@ -1,6 +1,6 @@
 from typing import Callable, Coroutine, Any, Optional
 
-class SemaConfig:
+class PvWayPgSemaConfig:
     def __init__(
             self,
             schema_name: str,

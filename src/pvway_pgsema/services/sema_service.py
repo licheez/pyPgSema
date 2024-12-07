@@ -2,13 +2,13 @@ import asyncio
 
 from pvway_sema_abs.semaphore_service import SemaphoreService
 
-from src.pvway_pgsema.services.sema_config import SemaConfig
+from pvway_pgsema.di.pvway_pgsema_config import PvWayPgSemaConfig
 from injector import inject
 
 
 class SemaService(SemaphoreService):
     @inject
-    def __init__(self, config: SemaConfig):
+    def __init__(self, config: PvWayPgSemaConfig):
         print('in SemaService.init')
         self._schema_name = config.schema_name
         self._table_name = config.table_name

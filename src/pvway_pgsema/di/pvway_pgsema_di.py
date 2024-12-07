@@ -2,8 +2,8 @@ from typing import Callable, Coroutine, Any, Optional
 
 from injector import Binder, singleton
 
-from pvway_pgsema.module.sema_module import SemaModule
-from pvway_pgsema.services.sema_config import SemaConfig
+from pvway_pgsema.di.pvway_pgsema_module import PvwayPgSemaModule
+from pvway_pgsema.di.pvway_pgsema_config import PvWayPgSemaConfig
 
 
 class PvWayPgSemaConfigurer:
@@ -20,14 +20,14 @@ class PvWayPgSemaConfigurer:
         self.__log_info = log_info
 
     def __configure_sema(self, binder: Binder) -> None:
-        config = SemaConfig(
+        config = PvWayPgSemaConfig(
             self.__schema_name,
             self.__table_name,
             self.__get_cs_async,
             self.__log_exception,
             self.__log_info
         )
-        binder.bind(SemaConfig, to=config, scope=singleton)
+        binder.bind(PvWayPgSemaConfig, to=config, scope=singleton)
         print('Configuring sema...')
 
     def install(self, binder: Binder) -> None:
@@ -35,5 +35,5 @@ class PvWayPgSemaConfigurer:
         :param binder: A Binder object used to install configurations and modules for the sema.
         """
         binder.install(self.__configure_sema)
-        binder.install(SemaModule())
+        binder.install(PvwayPgSemaModule())
 
