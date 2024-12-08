@@ -128,7 +128,25 @@ class SemaService(SemaphoreService):
     async def touch_semaphore_async(
             self,
             name: str) -> None:
-        pass
+        name = DaoHelper.truncate_then_escape(name, 50)
+        cs = await self._get_cs_async()
+        cn: Connection = await connect(cs)
+        utc_now = datetime.datetime.now(datetime.UTC)
+        sql_utc_now = DaoHelper.get_timestamp(utc_now)
+        update_text = (
+            f"UPDATE \"{self._schema_name}\".\"{self._table_name}\" "
+            f"SET \"{self.__update_date_wo_tz_field}\" = {sql_utc_now} "
+            f"WHERE \"{self.__name_field}\" = '{name}'"
+        )
+        try:
+            await cn.execute(update_text)
+            self.__log_info(f"semaphore '{name}' was touched")
+        except Exception as e:
+            self.__log_info(update_text)
+            self._log_exception(e)
+            raise
+        finally:
+            await cn.close()
 
     async def release_semaphore_async(
             self,
