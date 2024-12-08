@@ -51,7 +51,8 @@ def main():
     si = asyncio.run(svc.acquire_semaphore_async(
         'name', 'owner',
         datetime.timedelta(minutes=5)))
-    print(si)
+
+    __log_info(f"{si}")
 
 
 # Press the green button in the gutter to run the script.
