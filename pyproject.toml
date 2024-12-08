@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.13"
-pvway-sema-abs = "^0.1.1"
+pvway-sema-abs = "0.1.2"
 injector = "^0.22.0"
 asyncpg = "^0.30.0"
 
