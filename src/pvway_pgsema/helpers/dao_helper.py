@@ -29,4 +29,4 @@ class DaoHelper:
         :return: A string representation of the given datetime
         in the format 'YYYY-MM-DD HH:MM:SS.sss'.
         """
-        return f"'{utc_now:%Y-%m-%d %H:%M:%S.%f}'"[:-3]
+        return f"{utc_now:%Y-%m-%d %H:%M:%S.%f}"[:-3]
