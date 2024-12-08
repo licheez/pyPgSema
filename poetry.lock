@@ -79,16 +79,16 @@ dev = ["black (==24.3.0)", "build (==1.0.3)", "check-manifest (==0.49)", "click 
 
 [[package]]
 name = "pvway-sema-abs"
-version = "0.1.2"
+version = "0.1.3"
 description = "abstraction layer for a semaphore (mutex) service"
 optional = false
 python-versions = "<4.0,>=3.13"
 files = [
-    {file = "pvway_sema_abs-0.1.2-py3-none-any.whl", hash = "sha256:b429f8105b59e606109a61d3944b59ef78250f2a9e89d57f00e55439f60042da"},
-    {file = "pvway_sema_abs-0.1.2.tar.gz", hash = "sha256:f33eee3b8fc27552be2b0d4fb5e9df36b438f9e6deb51d764faf518f89e73217"},
+    {file = "pvway_sema_abs-0.1.3-py3-none-any.whl", hash = "sha256:d3b0cab68495c4a1682645d30370a8171716e1bf682d93f12361c6a44a91a8f3"},
+    {file = "pvway_sema_abs-0.1.3.tar.gz", hash = "sha256:0e6061e9e6c8d2ac74761995a437af07e77955d31000a0953519ee3e7a65f59b"},
 ]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.13"
-content-hash = "a0809781e8d5a6ea7a64185c900f94776e5be054e6c6a08189b77c723c6d965f"
+content-hash = "66cf8e3be996b8d26184f785e611892801dc9a42f71786e9925a0e93b141a382"
