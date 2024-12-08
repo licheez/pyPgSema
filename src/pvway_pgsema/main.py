@@ -48,11 +48,19 @@ def main():
     print('sema_svc available')
     svc.print_config()
 
-    si = asyncio.run(svc.acquire_semaphore_async(
-        'name', 'owner',
-        datetime.timedelta(minutes=5)))
+    sema_name = 'name'
 
+    si = asyncio.run(svc.acquire_semaphore_async(
+        sema_name, 'owner',
+        datetime.timedelta(minutes=5)))
     __log_info(f"{si}")
+
+    asyncio.run(svc.touch_semaphore_async(sema_name))
+
+    fSi = asyncio.run(svc.get_semaphore_async(sema_name))
+    __log_info(f"{fSi}")
+
+    asyncio.run(svc.release_semaphore_async(sema_name))
 
 
 # Press the green button in the gutter to run the script.
