@@ -28,7 +28,7 @@ class DbSemaphore(SemaphoreInfo):
         create_dt = self.CreateDateUtc.isoformat()
         update_dt = self.UpdateDateUtc.isoformat()
         expire_dt = self.expires_at_utc.isoformat()
-        return f"semaphore {self.Name} owned by {self.Owner} " + \
+        return f"semaphore '{self.Name}' owned by '{self.Owner}' " + \
             f"created at {create_dt} UTC, " + \
             f"with a timeout of {self.Timeout} " + \
             f"has been updated the last time at {update_dt} UTC " + \

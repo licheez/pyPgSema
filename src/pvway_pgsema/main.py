@@ -14,7 +14,7 @@ def print_hi(name):
 
 
 async def __get_cs_async():
-    return 'cs'
+    return 'postgresql://postgres:postgres@localhost:5432/postgres'
 
 
 def __log_exception(e: Exception) -> None:
@@ -36,8 +36,8 @@ def main():
     injector = Injector()
 
     configurer = PvWayPgSemaConfigurer(
-        schema_name='schema',
-        table_name='table',
+        schema_name='pySemaLab',
+        table_name='semaphore',
         get_cs_async=__get_cs_async,
         log_exception=__log_exception,
         log_info=__log_info)
