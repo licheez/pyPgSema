@@ -135,10 +135,11 @@ class SemaService(SemaphoreService):
         sql_utc_now = DaoHelper.get_timestamp(utc_now)
         update_text = (
             f"UPDATE \"{self._schema_name}\".\"{self._table_name}\" "
-            f"SET \"{self.__update_date_wo_tz_field}\" = {sql_utc_now} "
+            f"SET \"{self.__update_date_wo_tz_field}\" = '{sql_utc_now}' "
             f"WHERE \"{self.__name_field}\" = '{name}'"
         )
         try:
+            await self.__create_table_if_not_exists_async(cn)
             await cn.execute(update_text)
             self.__log_info(f"semaphore '{name}' was touched")
         except Exception as e:
@@ -151,18 +152,42 @@ class SemaService(SemaphoreService):
     async def release_semaphore_async(
             self,
             name: str) -> None:
-        pass
+        name = DaoHelper.truncate_then_escape(name, 50)
+        cs = await self._get_cs_async()
+        cn: Connection = await connect(cs)
+
+        try:
+            await self.__create_table_if_not_exists_async(cn)
+            await self.__release_semaphore_async(cn, name)
+            self.__log_info(f"semaphore '{name}' was released")
+        except Exception as e:
+            self._log_exception(e)
+            raise
+        finally:
+            await cn.close()
 
     async def get_semaphore_async(
             self,
-            name: str) -> SemaphoreInfo:
-        utc_now = datetime.datetime.now(datetime.UTC)
-        return DbSemaphore(
-            SemaphoreStatusEnu.ACQUIRED,
-            'name',
-            'owner',
-            datetime.timedelta(minutes=5),
-            utc_now, utc_now)
+            name: str) -> SemaphoreInfo | None:
+
+        name = DaoHelper.truncate_then_escape(name, 50)
+        cs = await self._get_cs_async()
+        cn: Connection = await connect(cs)
+        try:
+            await self.__create_table_if_not_exists_async(cn)
+            f_semaphore = await self.__get_semaphore_async(cn, name)
+            if f_semaphore is None:
+                return None
+
+            return DbSemaphore.from_semaphore_info(
+                f_semaphore.status, f_semaphore)
+
+        except Exception as e:
+            self._log_exception(e)
+            raise
+
+        finally:
+            await cn.close()
 
     T = TypeVar('T')
 
