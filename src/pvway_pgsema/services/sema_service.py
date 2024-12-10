@@ -209,7 +209,27 @@ class SemaService(SemaphoreService):
         :param sleep_between_attempts: The duration to sleep between attempts to acquire the semaphore when it is unavailable.
         :return: The result of the work executed within the isolated context.
         """
-        pass
+        while True:
+            si = await self.acquire_semaphore_async(
+                semaphore_name, owner, timeout)
+            if si.status == SemaphoreStatusEnu.ACQUIRED:
+                try:
+                    return await work_async()
+                except Exception as e:
+                    self._log_exception(e)
+                    raise
+                finally:
+                    await self.release_semaphore_async(semaphore_name)
+
+            if notify:
+                notification = (
+                    f"mutex '{semaphore_name}' is locked by '{si.owner}' "
+                    f"since {si.create_date_utc} UTC. "
+                    f"It will expire on {si.expires_at_utc} UTC. "
+                    f"Sleeping {sleep_between_attempts} seconds."
+                )
+                notify(notification)
+            await asyncio.sleep(sleep_between_attempts.total_seconds())
 
     async def __release_semaphore_async(
             self, cn: Connection, name: str) -> None:
